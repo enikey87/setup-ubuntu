@@ -1,0 +1,95 @@
+---
+- hosts: ubuntu_setup
+  tasks:
+    - name: Generate OpenSSH keypair
+      openssh_keypair:
+        path: /home/enikey/.ssh/id_rsa
+        owner: enikey
+        group: enikey
+
+    - name: Fix OpenSSH access rights
+      file:
+        path: /home/enikey/.ssh/id_rsa.pub
+        owner: enikey
+        group: enikey
+
+    - name: Add Unity key
+      become: yes
+      ansible.builtin.apt_key:
+        url: "https://hub.unity3d.com/linux/keys/public"
+        state: present
+
+    - name: Add Unity repo
+      become: yes
+      ansible.builtin.apt_repository:
+        repo: deb [arch=amd64] https://hub.unity3d.com/linux/repos/deb stable main
+        state: present
+        filename: unityhub
+
+    - name: Add Chrome key
+      become: yes
+      ansible.builtin.apt_key:
+        url: "https://dl.google.com/linux/linux_signing_key.pub"
+        state: present
+
+    - name: Add Chrome repo
+      become: yes
+      ansible.builtin.apt_repository:
+        repo: deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
+        state: present
+        filename: google-chrome
+
+    - name: Install core packages
+      become: yes
+      apt:
+        pkg:
+          - mc
+          - net-tools
+          - wget
+          - openssh-server
+          - git
+          - apt-transport-https
+          - google-chrome-stable
+          - tasksel
+          - fuse
+          - libfuse2
+          - unityhub
+        state: latest
+        update_cache: true
+
+    # https://1password.com/ru/downloads/linux/
+    # https://stackoverflow.com/questions/41271525/ansible-installation-of-debian-packages
+    - name: Install 1P
+      become: yes
+      apt:
+        deb: "https://downloads.1password.com/linux/debian/amd64/stable/1password-latest.deb"
+
+    - name: Install jetbrains-toolbox
+      become: true
+      unarchive:
+        src: "https://download-cdn.jetbrains.com/toolbox/jetbrains-toolbox-1.24.12080.tar.gz"
+        dest: "/usr/local/bin"
+        remote_src: yes
+        creates: "/usr/local/bin/jetbrains-toolbox-1.24.12080/jetbrains-toolbox"
+
+    - name: Link jetbrains-toolbox 
+      become: true
+      file:
+        src: "/usr/local/bin/jetbrains-toolbox-1.24.12080/jetbrains-toolbox"
+        dest: "/usr/local/bin/jetbrains-toolbox"
+        state: link
+
+    - name: Open RDP port
+      become: yes
+      ufw:
+        rule: allow
+        port: 3389
+        proto: tcp
+
+    - name: Open SSH port
+      become: yes
+      ufw:
+        rule: allow
+        port: 22
+        proto: tcp
+
