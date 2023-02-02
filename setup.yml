@@ -56,6 +56,10 @@
           - unityhub
           - ntfs-3g
           - npm
+          - vlc
+          - ffmpeg
+          - lame
+          - sox
         state: latest
         update_cache: true
 
