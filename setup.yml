@@ -54,6 +54,8 @@
           - fuse
           - libfuse2
           - unityhub
+          - ntfs-3g
+          - npm
         state: latest
         update_cache: true
 
@@ -63,21 +65,21 @@
       become: yes
       apt:
         deb: "https://downloads.1password.com/linux/debian/amd64/stable/1password-latest.deb"
-
-    - name: Install jetbrains-toolbox
-      become: true
-      unarchive:
-        src: "https://download-cdn.jetbrains.com/toolbox/jetbrains-toolbox-1.24.12080.tar.gz"
-        dest: "/usr/local/bin"
-        remote_src: yes
-        creates: "/usr/local/bin/jetbrains-toolbox-1.24.12080/jetbrains-toolbox"
-
-    - name: Link jetbrains-toolbox 
-      become: true
-      file:
-        src: "/usr/local/bin/jetbrains-toolbox-1.24.12080/jetbrains-toolbox"
-        dest: "/usr/local/bin/jetbrains-toolbox"
-        state: link
+#
+#    - name: Install jetbrains-toolbox
+#      become: true
+#      unarchive:
+#        src: "https://download-cdn.jetbrains.com/toolbox/jetbrains-toolbox-1.24.12080.tar.gz"
+#        dest: "/usr/local/bin"
+#        remote_src: yes
+#        creates: "/usr/local/bin/jetbrains-toolbox-1.24.12080/jetbrains-toolbox"
+#
+#    - name: Link jetbrains-toolbox
+#      become: true
+#      file:
+#        src: "/usr/local/bin/jetbrains-toolbox-1.24.12080/jetbrains-toolbox"
+#        dest: "/usr/local/bin/jetbrains-toolbox"
+#        state: link
 
     - name: Open RDP port
       become: yes
