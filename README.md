@@ -1,7 +1,6 @@
 ```
-sudo apt install python3 ansible tasksel -y
+sudo apt install python3 ansible -y
 sudo ansible-playbook -i hosts setup.yml
-```
 
 # install deps for cursor in appimage format
 sudo apt install libfuse2
@@ -22,6 +21,23 @@ eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 cat ~/.ssh/id_ed25519.pub
 
+# Add your SSH key to GitHub (short version)
+1. Copy your public key to clipboard (requires xclip):
+   ```bash
+   cat ~/.ssh/id_rsa.pub | xclip -selection clipboard
+   ```
+   If you don't have xclip, install it with:
+   ```bash
+   sudo apt install xclip
+   ```
+2. Go to https://github.com/settings/keys
+3. Click "New SSH key", give it a name, and paste your key.
+4. Save.
+5. Test with:
+   ```bash
+   ssh -T git@github.com
+   ```
+
 # Go to GitHub SSH keys settings
 #Open your browser and go to:
 #https://github.com/settings/keys
@@ -30,6 +46,3 @@ cat ~/.ssh/id_ed25519.pub
 #In the "Title" field, enter a name (e.g., "My Laptop" or "Work PC").
 #In the "Key" field, paste the public key you copied in step 1.
 #Click "Add SSH key".
-
-# Test your connection
-ssh -T git@github.com

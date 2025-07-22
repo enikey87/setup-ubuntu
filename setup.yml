@@ -1,11 +1,11 @@
 ---
 - hosts: ubuntu_setup
   vars:
-    my_user: "{{ ansible_user_id }}"
+    my_user: "enikey87"
     my_group: "{{ ansible_user_gid }}"
   tasks:
     - name: Ensure SSH directory exists
-      become: yes
+      become: no
       ansible.builtin.file:
         path: "/home/{{ my_user }}/.ssh"
         state: directory
@@ -17,6 +17,8 @@
       become: no
       openssh_keypair:
         path: "/home/{{ my_user }}/.ssh/id_rsa"
+        type: rsa
+        size: 4096
         owner: "{{ my_user }}"
         group: "{{ my_user }}"
 
@@ -59,6 +61,7 @@
           - ffmpeg
           - lame
           - sox
+          - xclip
         state: latest
         update_cache: true
 
@@ -91,9 +94,9 @@
         proto: tcp
 
   roles:
-    - vpn
-    - cursor
-    - jetbrains-toolbox
+    # - vpn
+    # - cursor
+    # - jetbrains-toolbox
 
 #
 #    - name: Install jetbrains-toolbox
