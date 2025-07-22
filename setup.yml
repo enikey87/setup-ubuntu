@@ -4,17 +4,29 @@
     my_user: "{{ ansible_user_id }}"
     my_group: "{{ ansible_user_gid }}"
   tasks:
+    - name: Ensure SSH directory exists
+      become: yes
+      ansible.builtin.file:
+        path: "/home/{{ my_user }}/.ssh"
+        state: directory
+        owner: "{{ my_user }}"
+        group: "{{ my_user }}"
+        mode: '0700'
+
     - name: Generate OpenSSH keypair
+      become: no
       openssh_keypair:
         path: "/home/{{ my_user }}/.ssh/id_rsa"
         owner: "{{ my_user }}"
         group: "{{ my_user }}"
 
     - name: Fix OpenSSH access rights
+      become: yes
       file:
         path: "/home/{{ my_user }}/.ssh/id_rsa.pub"
         owner: "{{ my_user }}"
         group: "{{ my_user }}"
+        mode: '0644'
 
     - name: Add Chrome key
       become: yes
@@ -57,6 +69,27 @@
       apt:
         deb: "https://downloads.1password.com/linux/debian/amd64/stable/1password-latest.deb"
 
+    - name: Configure Git user email
+      become: no
+      ansible.builtin.git_config:
+        name: user.email
+        value: "enikey87@gmail.com"
+        scope: system
+
+    - name: Configure Git user name
+      become: no
+      ansible.builtin.git_config:
+        name: user.name
+        value: "enikey87"
+        scope: system
+
+    - name: Open SSH port
+      become: yes
+      ufw:
+        rule: allow
+        port: 22
+        proto: tcp
+
   roles:
     - vpn
 
@@ -75,11 +108,4 @@
 #        src: "/usr/local/bin/jetbrains-toolbox-1.24.12080/jetbrains-toolbox"
 #        dest: "/usr/local/bin/jetbrains-toolbox"
 #        state: link
-
-    - name: Open SSH port
-      become: yes
-      ufw:
-        rule: allow
-        port: 22
-        proto: tcp
 
