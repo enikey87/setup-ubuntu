@@ -69,5 +69,5 @@ The role is idempotent and will skip installation if Cursor is already present.
 Run with:
 
 ```bash
-sudo ansible-playbook -i hosts cursor-role.yml
+udo ansible-playbook -i hosts cursor-role.yml
 ``` 

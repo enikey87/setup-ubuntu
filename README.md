@@ -1,6 +1,9 @@
-```
+# Install
+
+```shell
 sudo apt install python3 ansible -y
-sudo ansible-playbook -i hosts setup.yml
+sudo ansible-playbook install.yml
+```
 
 # Add your SSH key to GitHub (short version)
 1. Copy your public key to clipboard (requires xclip):
@@ -14,3 +17,9 @@ sudo ansible-playbook -i hosts setup.yml
    ```bash
    ssh -T git@github.com
    ```
+
+# Post installation
+
+```shell
+sudo ansible-playbook postinstall.yml
+```

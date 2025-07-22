@@ -1,5 +1,5 @@
 ---
-- hosts: ubuntu_setup
+- hosts: localhost
   vars_files:
     - vars.yml
   vars:
@@ -108,20 +108,3 @@
     - vpn
     - cursor
     - jetbrains-toolbox
-
-#
-#    - name: Install jetbrains-toolbox
-#      become: true
-#      unarchive:
-#        src: "https://download-cdn.jetbrains.com/toolbox/jetbrains-toolbox-1.24.12080.tar.gz"
-#        dest: "/usr/local/bin"
-#        remote_src: yes
-#        creates: "/usr/local/bin/jetbrains-toolbox-1.24.12080/jetbrains-toolbox"
-#
-#    - name: Link jetbrains-toolbox
-#      become: true
-#      file:
-#        src: "/usr/local/bin/jetbrains-toolbox-1.24.12080/jetbrains-toolbox"
-#        dest: "/usr/local/bin/jetbrains-toolbox"
-#        state: link
-

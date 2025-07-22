@@ -1,2 +1,0 @@
-[ubuntu_setup]
-localhost ansible_connection=local
