@@ -1,0 +1,27 @@
+---
+- hosts: ubuntu_setup
+  tasks:
+    - name: Download and install Outline GPG key
+      become: yes
+      shell: |
+        wget -qO- https://us-apt.pkg.dev/doc/repo-signing-key.gpg | gpg --dearmor -o /etc/apt/trusted.gpg.d/gcloud-artifact-registry-us.gpg
+      args:
+        creates: /etc/apt/trusted.gpg.d/gcloud-artifact-registry-us.gpg
+
+    - name: Add Outline repository
+      become: yes
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64] https://us-apt.pkg.dev/projects/jigsaw-outline-apps outline-client main"
+        state: present
+        filename: outline-client
+
+    - name: Update apt cache
+      become: yes
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install Outline client
+      become: yes
+      ansible.builtin.apt:
+        name: outline-client
+        state: present 

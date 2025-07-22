@@ -1,7 +1,3 @@
-```
-sudo apt install python3 ansible tasksel -y
-sudo ansible-playbook -i hosts setup.yml
-```
 
 # install deps for cursor in appimage format
 sudo apt install libfuse2

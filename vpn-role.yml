@@ -1,0 +1,4 @@
+---
+- hosts: ubuntu_setup
+  roles:
+    - vpn 

@@ -1,30 +1,20 @@
 ---
 - hosts: ubuntu_setup
+  vars:
+    my_user: "{{ ansible_user_id }}"
+    my_group: "{{ ansible_user_gid }}"
   tasks:
     - name: Generate OpenSSH keypair
       openssh_keypair:
-        path: /home/enikey/.ssh/id_rsa
-        owner: enikey
-        group: enikey
+        path: "/home/{{ my_user }}/.ssh/id_rsa"
+        owner: "{{ my_user }}"
+        group: "{{ my_user }}"
 
     - name: Fix OpenSSH access rights
       file:
-        path: /home/enikey/.ssh/id_rsa.pub
-        owner: enikey
-        group: enikey
-
-    - name: Add Unity key
-      become: yes
-      ansible.builtin.apt_key:
-        url: "https://hub.unity3d.com/linux/keys/public"
-        state: present
-
-    - name: Add Unity repo
-      become: yes
-      ansible.builtin.apt_repository:
-        repo: deb [arch=amd64] https://hub.unity3d.com/linux/repos/deb stable main
-        state: present
-        filename: unityhub
+        path: "/home/{{ my_user }}/.ssh/id_rsa.pub"
+        owner: "{{ my_user }}"
+        group: "{{ my_user }}"
 
     - name: Add Chrome key
       become: yes
@@ -50,10 +40,7 @@
           - git
           - apt-transport-https
           - google-chrome-stable
-          - tasksel
-          - fuse
           - libfuse2
-          - unityhub
           - ntfs-3g
           - npm
           - vlc
@@ -69,6 +56,10 @@
       become: yes
       apt:
         deb: "https://downloads.1password.com/linux/debian/amd64/stable/1password-latest.deb"
+
+  roles:
+    - vpn
+
 #
 #    - name: Install jetbrains-toolbox
 #      become: true
@@ -84,13 +75,6 @@
 #        src: "/usr/local/bin/jetbrains-toolbox-1.24.12080/jetbrains-toolbox"
 #        dest: "/usr/local/bin/jetbrains-toolbox"
 #        state: link
-
-    - name: Open RDP port
-      become: yes
-      ufw:
-        rule: allow
-        port: 3389
-        proto: tcp
 
     - name: Open SSH port
       become: yes
