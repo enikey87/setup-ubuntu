@@ -1,0 +1,62 @@
+---
+- name: Check if jbt command exists
+  ansible.builtin.command: which jbt
+  register: jbt_check
+  ignore_errors: yes
+  changed_when: false
+
+- name: Ensure user's local bin directory exists
+  become: no
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.local/bin"
+    state: directory
+    mode: '0755'
+  when: jbt_check.rc != 0
+
+- name: Create JetBrains Toolbox directory in user home
+  become: no
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/jetbrains-toolbox"
+    state: directory
+    mode: '0755'
+  when: jbt_check.rc != 0
+
+- name: Download JetBrains Toolbox
+  become: no
+  ansible.builtin.get_url:
+    url: "https://download-cdn.jetbrains.com/toolbox/jetbrains-toolbox-2.7.0.48109.tar.gz"
+    dest: "{{ ansible_env.HOME }}/jetbrains-toolbox.tar.gz"
+    mode: '0644'
+  when: jbt_check.rc != 0
+
+- name: Extract JetBrains Toolbox
+  become: no
+  ansible.builtin.unarchive:
+    src: "{{ ansible_env.HOME }}/jetbrains-toolbox.tar.gz"
+    dest: "{{ ansible_env.HOME }}/jetbrains-toolbox"
+    remote_src: yes
+    creates: "{{ ansible_env.HOME }}/jetbrains-toolbox/jetbrains-toolbox-2.7.0.48109/bin/jetbrains-toolbox"
+  when: jbt_check.rc != 0
+
+- name: Remove downloaded tar.gz file
+  become: no
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/jetbrains-toolbox.tar.gz"
+    state: absent
+  when: jbt_check.rc != 0
+
+- name: Create jbt symlink in user's local bin
+  become: no
+  ansible.builtin.file:
+    src: "{{ ansible_env.HOME }}/jetbrains-toolbox/jetbrains-toolbox-2.7.0.48109/bin/jetbrains-toolbox"
+    dest: "{{ ansible_env.HOME }}/.local/bin/jbt"
+    state: link
+  when: jbt_check.rc != 0
+
+- name: Add ~/.local/bin to PATH in .bashrc
+  become: no
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    line: 'export PATH="$HOME/.local/bin:$PATH"'
+    state: present
+  when: jbt_check.rc != 0 
