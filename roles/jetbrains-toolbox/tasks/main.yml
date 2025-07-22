@@ -1,4 +1,11 @@
 ---
+- name: Set JetBrains Toolbox download URL
+  set_fact:
+    jbt_url: "{{ jbt_url | default('https://download-cdn.jetbrains.com/toolbox/jetbrains-toolbox-2.7.0.48109.tar.gz') }}"
+    jbt_tar: "{{ ansible_env.HOME }}/jetbrains-toolbox.tar.gz"
+    jbt_extract_dir: "{{ ansible_env.HOME }}/jetbrains-toolbox"
+    jbt_symlink: "{{ ansible_env.HOME }}/.local/bin/jbt"
+
 - name: Check if jbt command exists
   ansible.builtin.command: which jbt
   register: jbt_check
@@ -16,7 +23,7 @@
 - name: Create JetBrains Toolbox directory in user home
   become: no
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/jetbrains-toolbox"
+    path: "{{ jbt_extract_dir }}"
     state: directory
     mode: '0755'
   when: jbt_check.rc != 0
@@ -24,34 +31,44 @@
 - name: Download JetBrains Toolbox
   become: no
   ansible.builtin.get_url:
-    url: "https://download-cdn.jetbrains.com/toolbox/jetbrains-toolbox-2.7.0.48109.tar.gz"
-    dest: "{{ ansible_env.HOME }}/jetbrains-toolbox.tar.gz"
+    url: "{{ jbt_url }}"
+    dest: "{{ jbt_tar }}"
     mode: '0644'
   when: jbt_check.rc != 0
 
 - name: Extract JetBrains Toolbox
   become: no
   ansible.builtin.unarchive:
-    src: "{{ ansible_env.HOME }}/jetbrains-toolbox.tar.gz"
-    dest: "{{ ansible_env.HOME }}/jetbrains-toolbox"
+    src: "{{ jbt_tar }}"
+    dest: "{{ jbt_extract_dir }}"
     remote_src: yes
-    creates: "{{ ansible_env.HOME }}/jetbrains-toolbox/jetbrains-toolbox-2.7.0.48109/bin/jetbrains-toolbox"
   when: jbt_check.rc != 0
 
 - name: Remove downloaded tar.gz file
   become: no
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/jetbrains-toolbox.tar.gz"
+    path: "{{ jbt_tar }}"
     state: absent
+  when: jbt_check.rc != 0
+
+- name: Find JetBrains Toolbox binary
+  become: no
+  ansible.builtin.find:
+    paths: "{{ jbt_extract_dir }}"
+    patterns: 'jetbrains-toolbox'
+    file_type: file
+    recurse: true
+  register: jbt_found
   when: jbt_check.rc != 0
 
 - name: Create jbt symlink in user's local bin
   become: no
   ansible.builtin.file:
-    src: "{{ ansible_env.HOME }}/jetbrains-toolbox/jetbrains-toolbox-2.7.0.48109/bin/jetbrains-toolbox"
-    dest: "{{ ansible_env.HOME }}/.local/bin/jbt"
+    src: "{{ jbt_found.files[0].path }}"
+    dest: "{{ jbt_symlink }}"
     state: link
-  when: jbt_check.rc != 0
+    force: yes
+  when: jbt_check.rc != 0 and jbt_found.files|length > 0
 
 - name: Add ~/.local/bin to PATH in .bashrc
   become: no
