@@ -92,6 +92,7 @@
 
   roles:
     - vpn
+    - cursor
 
 #
 #    - name: Install jetbrains-toolbox
