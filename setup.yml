@@ -1,7 +1,8 @@
 ---
 - hosts: ubuntu_setup
+  vars_files:
+    - vars.yml
   vars:
-    my_user: "enikey87"
     my_group: "{{ ansible_user_gid }}"
   tasks:
     - name: Ensure SSH directory exists
@@ -12,6 +13,15 @@
         owner: "{{ my_user }}"
         group: "{{ my_user }}"
         mode: '0700'
+
+    - name: Ensure git directory exists
+      become: no
+      ansible.builtin.file:
+        path: "/home/{{ my_user }}/git"
+        state: directory
+        owner: "{{ my_user }}"
+        group: "{{ my_user }}"
+        mode: '0755'
 
     - name: Generate OpenSSH keypair
       become: no
@@ -62,6 +72,7 @@
           - lame
           - sox
           - xclip
+          - openjdk-21-jdk
         state: latest
         update_cache: true
 
