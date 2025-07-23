@@ -104,6 +104,22 @@
         port: 22
         proto: tcp
 
+    - name: Install Nomad via snap
+      become: yes
+      community.general.snap:
+        name: nomad
+        state: present
+        classic: yes
+      tags: nomad
+
+    - name: Install Vault via snap
+      become: yes
+      community.general.snap:
+        name: vault
+        state: present
+        classic: yes
+      tags: nomad
+
   roles:
     - vpn
     - cursor
