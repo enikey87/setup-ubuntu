@@ -44,6 +44,8 @@ ansible-playbook postinstall.yml -K
 ```shell
 # take from 1P
 vault login -method=userpass username=person
+vault token lookup -format=json | jq -r .data.id > ~/.vault-token
+chmod 600 ~/.vault-token
 
 # run every month
 sh ./access/nomad_cli.sh
