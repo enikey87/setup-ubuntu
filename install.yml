@@ -126,7 +126,34 @@
         path: "{{ ansible_env.HOME }}/.bashrc"
         line: 'export VAULT_ADDR="https://vault.ops.songsterr.com:8200"'
         state: present
-      tags: nomad
+
+    - name: Add NOMAD_ADDR export to .bashrc
+      become: no
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.bashrc"
+        line: 'export NOMAD_ADDR="https://a2.ops.songsterr.com:4646"'
+        state: present
+
+    - name: Add NOMAD_CACERT export to .bashrc
+      become: no
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.bashrc"
+        line: 'export NOMAD_CACERT="$HOME/.nomad/cachain.pem"'
+        state: present
+
+    - name: Add NOMAD_CLIENT_CERT export to .bashrc
+      become: no
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.bashrc"
+        line: 'export NOMAD_CLIENT_CERT="$HOME/.nomad/cert.pem"'
+        state: present
+
+    - name: Add NOMAD_CLIENT_KEY export to .bashrc
+      become: no
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.bashrc"
+        line: 'export NOMAD_CLIENT_KEY="$HOME/.nomad/privkey.pem"'
+        state: present
 
   roles:
     - vpn
