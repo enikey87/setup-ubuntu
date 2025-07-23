@@ -44,6 +44,20 @@
         group: "{{ my_group }}"
         mode: '0755'
 
+    - name: Configure Git user email
+      become: no
+      ansible.builtin.git_config:
+        name: user.email
+        value: "enikey87@gmail.com"
+        scope: system
+
+    - name: Configure Git user name
+      become: no
+      ansible.builtin.git_config:
+        name: user.name
+        value: "enikey87"
+        scope: system
+
     - name: Clone repositories
       become: no
       ansible.builtin.git:

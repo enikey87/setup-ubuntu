@@ -17,14 +17,7 @@
         group: "{{ my_user }}"
         mode: '0700'
 
-    - name: Ensure git directory exists
-      become: no
-      ansible.builtin.file:
-        path: "/home/{{ my_user }}/git"
-        state: directory
-        owner: "{{ my_user }}"
-        group: "{{ my_user }}"
-        mode: '0755'
+
 
     - name: Generate OpenSSH keypair
       become: no
@@ -87,19 +80,7 @@
       apt:
         deb: "https://downloads.1password.com/linux/debian/amd64/stable/1password-latest.deb"
 
-    - name: Configure Git user email
-      become: no
-      ansible.builtin.git_config:
-        name: user.email
-        value: "enikey87@gmail.com"
-        scope: system
 
-    - name: Configure Git user name
-      become: no
-      ansible.builtin.git_config:
-        name: user.name
-        value: "enikey87"
-        scope: system
 
     - name: Open SSH port
       become: yes
