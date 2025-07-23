@@ -85,3 +85,30 @@
         PATH: "{{ ansible_env.PATH }}"
       loop: "{{ repos }}"
       when: item.name in ['songsterr-web', 'render-server-satellite', 'midi-generator']
+
+    - name: Add ssh_config Include directive to ~/.ssh/config
+      become: no
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.ssh/config"
+        line: "Include {{ git_dir }}/authorized-keys/ssh_config"
+        state: present
+        create: yes
+        mode: '0600'
+      tags: ssh
+
+    - name: Create ssh directory in authorized-keys
+      become: no
+      ansible.builtin.file:
+        path: "{{ git_dir }}/authorized-keys/ssh"
+        state: directory
+        mode: '0700'
+      tags: ssh
+
+    - name: Create symbolic link for personal ssh key
+      become: no
+      ansible.builtin.file:
+        src: "{{ ansible_env.HOME }}/.ssh/id_rsa"
+        dest: "{{ ansible_env.HOME }}/.ssh/id_infra"
+        state: link
+        force: yes
+      tags: ssh
