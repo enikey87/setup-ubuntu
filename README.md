@@ -2,7 +2,7 @@
 
 ```shell
 sudo apt install python3 ansible -y
-sudo ansible-playbook install.yml
+ansible-playbook install.yml -K
 ```
 
 # Add your SSH key to GitHub (short version)
