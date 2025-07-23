@@ -27,6 +27,8 @@
         url: "git@github.com:songsterr/songsterr-conductor.git"
       - name: "opentelemetry-ts-instrumentation"
         url: "git@github.com:songsterr/opentelemetry-ts-instrumentation.git"
+      - name: "srw-midi-player"
+        url: "git@github.com:songsterr/srw-midi-player.git"
       - name: "authorized-keys"
         url: "git@github.com:songsterr/authorized-keys"
   tasks:
@@ -84,7 +86,7 @@
       environment:
         PATH: "{{ ansible_env.PATH }}"
       loop: "{{ repos }}"
-      when: item.name in ['songsterr-web', 'render-server-satellite', 'midi-generator']
+      when: item.name in ['songsterr-web', 'render-server-satellite', 'midi-generator', 'srw-midi-player']
 
     - name: Add ssh_config Include directive to ~/.ssh/config
       become: no
