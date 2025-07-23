@@ -18,14 +18,6 @@
         mode: '0600'
       tags: ssh
 
-    - name: Create ssh directory in authorized-keys
-      become: no
-      ansible.builtin.file:
-        path: "{{ git_dir }}/authorized-keys/ssh"
-        state: directory
-        mode: '0700'
-      tags: ssh
-
     - name: Create symbolic link for personal ssh key
       become: no
       ansible.builtin.file:
@@ -35,20 +27,3 @@
         force: yes
       tags: ssh
 
-    - name: Add local.songsterr.dev entries to /etc/hosts
-      become: yes
-      ansible.builtin.lineinfile:
-        path: /etc/hosts
-        line: "{{ item }}"
-        state: present
-      loop:
-        - "127.0.0.1 local.songsterr.dev local-static.songsterr.dev"
-        - "::1 local.songsterr.dev local-static.songsterr.dev"
-      tags: web
-
-    - name: Allow Node.js to use ports below 1024
-      become: yes
-      ansible.builtin.command: setcap 'cap_net_bind_service=+ep' /usr/local/bin/node
-      args:
-        creates: /usr/local/bin/node
-      tags: web

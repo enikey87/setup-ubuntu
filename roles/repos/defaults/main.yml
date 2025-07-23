@@ -26,4 +26,6 @@ repos:
   - name: "srw-midi-player"
     url: "git@github.com:songsterr/srw-midi-player.git"
   - name: "authorized-keys"
-    url: "git@github.com:songsterr/authorized-keys" 
+    url: "git@github.com:songsterr/authorized-keys"
+  - name: "setup-ubuntu"
+    url: "git@github.com:enikey87/setup-ubuntu.git"

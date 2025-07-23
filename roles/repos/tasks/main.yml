@@ -22,6 +22,13 @@
     value: "{{ git_user_name }}"
     scope: system
 
+- name: Check if repository already exists
+  become: no
+  ansible.builtin.stat:
+    path: "{{ git_dir }}/{{ item.name }}/.git"
+  register: repo_exists
+  loop: "{{ repos }}"
+
 - name: Clone repositories
   become: no
   ansible.builtin.git:
@@ -33,6 +40,7 @@
   environment:
     GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"
   loop: "{{ repos }}"
+  when: not repo_exists.results[ansible_loop.index0].stat.exists
 
 - name: Check if n is available
   become: no
@@ -67,4 +75,20 @@
   environment:
     PATH: "{{ ansible_env.PATH }}"
   loop: "{{ repos }}"
-  when: item.name in ['songsterr-web', 'render-server-satellite', 'midi-generator', 'srw-midi-player'] 
+  when: item.name in ['songsterr-web', 'render-server-satellite', 'midi-generator', 'srw-midi-player']
+
+- name: Add local.songsterr.dev entries to /etc/hosts
+  become: yes
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    line: "{{ item }}"
+    state: present
+  loop:
+    - "127.0.0.1 local.songsterr.dev local-static.songsterr.dev"
+    - "::1 local.songsterr.dev local-static.songsterr.dev"
+
+- name: Allow Node.js to use ports below 1024
+  become: yes
+  ansible.builtin.command: setcap 'cap_net_bind_service=+ep' /usr/local/bin/node
+  args:
+    creates: /usr/local/bin/node
