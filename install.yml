@@ -73,6 +73,7 @@
           - sox
           - xclip
           - openjdk-21-jdk
+          - libnss3-tools
         state: latest
         update_cache: true
 

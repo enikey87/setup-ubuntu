@@ -21,11 +21,11 @@
     mode: '0755'
   when: cursor_check.rc != 0
 
-- name: Create cursor symlink in /usr/local/bin
+- name: Create cursor.bin symlink in /usr/local/bin
   become: yes
   ansible.builtin.file:
     src: "/opt/cursor/cursor.bin"
-    dest: "/usr/local/bin/cursor"
+    dest: "/usr/local/bin/cursor.bin"
     state: link
   when: cursor_check.rc != 0
 
@@ -43,6 +43,6 @@
   become: yes
   ansible.builtin.file:
     src: "/usr/local/bin/cursor-launcher"
-    dest: "/usr/local/bin/cursor-app"
+    dest: "/usr/local/bin/cursor"
     state: link
   when: cursor_check.rc != 0 
