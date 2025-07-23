@@ -1,0 +1,85 @@
+---
+- name: Ensure git directory exists
+  become: no
+  ansible.builtin.file:
+    path: "{{ git_dir }}"
+    state: directory
+    owner: "{{ my_user }}"
+    group: "{{ my_group }}"
+    mode: '0755'
+
+- name: Test SSH connection to GitHub
+  become: no
+  ansible.builtin.command: ssh -T git@github.com
+  register: github_ssh_test
+  failed_when: false
+  changed_when: false
+
+- name: Display GitHub SSH connection status
+  become: no
+  ansible.builtin.debug:
+    msg: "GitHub SSH connection: {{ 'SUCCESS' if github_ssh_test.rc == 1 else 'FAILED' if github_ssh_test.rc == 255 else 'UNKNOWN' }}"
+  when: github_ssh_test is defined
+
+- name: Clone repositories
+  become: no
+  ansible.builtin.git:
+    repo: "{{ item.url }}"
+    dest: "{{ git_dir }}/{{ item.name }}"
+    accept_hostkey: yes
+    key_file: "/home/{{ my_user }}/.ssh/id_rsa"
+    update: yes
+  environment:
+    GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"
+  loop: "{{ repos }}"
+
+- name: Check if n is available
+  become: no
+  command: which n
+  register: n_check
+  ignore_errors: yes
+  changed_when: false
+
+- name: Install n (Node.js version manager)
+  become: yes
+  ansible.builtin.command: npm install -g n
+  args:
+    creates: "/usr/local/bin/n"
+  environment:
+    PATH: "{{ ansible_env.PATH }}"
+  when: n_check.rc != 0
+
+- name: Install lts Node.js version
+  become: yes
+  ansible.builtin.command: n lts
+  args:
+    creates: "/usr/local/bin/node"
+  environment:
+    PATH: "{{ ansible_env.PATH }}"
+  when: n_check.rc != 0
+
+- name: Install npm dependencies for Node.js projects
+  become: no
+  ansible.builtin.command: npm install
+  args:
+    chdir: "{{ git_dir }}/{{ item.name }}"
+  environment:
+    PATH: "{{ ansible_env.PATH }}"
+  loop: "{{ repos }}"
+  when: item.name in ['songsterr-web', 'render-server-satellite', 'midi-generator', 'srw-midi-player']
+
+- name: Add local.songsterr.dev entries to /etc/hosts
+  become: yes
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    line: "{{ item }}"
+    state: present
+  loop:
+    - "127.0.0.1 local.songsterr.dev local-static.songsterr.dev"
+    - "::1 local.songsterr.dev local-static.songsterr.dev"
+
+- name: Allow Node.js to use ports below 1024
+  become: yes
+  ansible.builtin.command: setcap 'cap_net_bind_service=+ep' /usr/local/bin/node
+  args:
+    creates: /usr/local/bin/node

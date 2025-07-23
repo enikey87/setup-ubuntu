@@ -1,30 +1,52 @@
 ---
-- hosts: ubuntu_setup
+- hosts: localhost
+  vars_files:
+    - vars.yml
+  vars:
+    my_group: "{{ ansible_user_gid }}"
+  roles:
+    - vpn
+    - docker
   tasks:
+    - name: Ensure SSH directory exists
+      become: no
+      ansible.builtin.file:
+        path: "/home/{{ my_user }}/.ssh"
+        state: directory
+        owner: "{{ my_user }}"
+        group: "{{ my_user }}"
+        mode: '0700'
+
     - name: Generate OpenSSH keypair
+      become: no
       openssh_keypair:
-        path: /home/enikey/.ssh/id_rsa
-        owner: enikey
-        group: enikey
+        path: "/home/{{ my_user }}/.ssh/id_rsa"
+        type: rsa
+        size: 4096
+        owner: "{{ my_user }}"
+        group: "{{ my_user }}"
 
     - name: Fix OpenSSH access rights
+      become: yes
       file:
-        path: /home/enikey/.ssh/id_rsa.pub
-        owner: enikey
-        group: enikey
+        path: "/home/{{ my_user }}/.ssh/id_rsa.pub"
+        owner: "{{ my_user }}"
+        group: "{{ my_user }}"
+        mode: '0644'
 
-    - name: Add Unity key
-      become: yes
-      ansible.builtin.apt_key:
-        url: "https://hub.unity3d.com/linux/keys/public"
-        state: present
+    - name: Configure Git user email
+      become: no
+      ansible.builtin.git_config:
+        name: user.email
+        value: "{{ git_user_email }}"
+        scope: system
 
-    - name: Add Unity repo
-      become: yes
-      ansible.builtin.apt_repository:
-        repo: deb [arch=amd64] https://hub.unity3d.com/linux/repos/deb stable main
-        state: present
-        filename: unityhub
+    - name: Configure Git user name
+      become: no
+      ansible.builtin.git_config:
+        name: user.name
+        value: "{{ git_user_name }}"
+        scope: system
 
     - name: Add Chrome key
       become: yes
@@ -50,16 +72,16 @@
           - git
           - apt-transport-https
           - google-chrome-stable
-          - tasksel
-          - fuse
           - libfuse2
-          - unityhub
           - ntfs-3g
           - npm
           - vlc
           - ffmpeg
           - lame
           - sox
+          - xclip
+          - openjdk-21-jdk
+          - libnss3-tools
         state: latest
         update_cache: true
 
@@ -69,28 +91,6 @@
       become: yes
       apt:
         deb: "https://downloads.1password.com/linux/debian/amd64/stable/1password-latest.deb"
-#
-#    - name: Install jetbrains-toolbox
-#      become: true
-#      unarchive:
-#        src: "https://download-cdn.jetbrains.com/toolbox/jetbrains-toolbox-1.24.12080.tar.gz"
-#        dest: "/usr/local/bin"
-#        remote_src: yes
-#        creates: "/usr/local/bin/jetbrains-toolbox-1.24.12080/jetbrains-toolbox"
-#
-#    - name: Link jetbrains-toolbox
-#      become: true
-#      file:
-#        src: "/usr/local/bin/jetbrains-toolbox-1.24.12080/jetbrains-toolbox"
-#        dest: "/usr/local/bin/jetbrains-toolbox"
-#        state: link
-
-    - name: Open RDP port
-      become: yes
-      ufw:
-        rule: allow
-        port: 3389
-        proto: tcp
 
     - name: Open SSH port
       become: yes
@@ -99,3 +99,53 @@
         port: 22
         proto: tcp
 
+    - name: Install Nomad via snap
+      become: yes
+      community.general.snap:
+        name: nomad
+        state: present
+        classic: yes
+      tags: nomad
+
+    - name: Install Vault via snap
+      become: yes
+      community.general.snap:
+        name: vault
+        state: present
+        classic: yes
+      tags: nomad
+
+    - name: Add VAULT_ADDR export to .bashrc
+      become: no
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.bashrc"
+        line: 'export VAULT_ADDR="https://vault.ops.songsterr.com:8200"'
+        state: present
+
+    - name: Add NOMAD_ADDR export to .bashrc
+      become: no
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.bashrc"
+        line: 'export NOMAD_ADDR="https://a2.ops.songsterr.com:4646"'
+        state: present
+
+    - name: Add NOMAD_CACERT export to .bashrc
+      become: no
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.bashrc"
+        line: 'export NOMAD_CACERT="$HOME/nomad/cachain.pem"'
+        state: present
+
+    - name: Add NOMAD_CLIENT_CERT export to .bashrc
+      become: no
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.bashrc"
+        line: 'export NOMAD_CLIENT_CERT="$HOME/nomad/cert.pem"'
+        state: present
+
+    - name: Add NOMAD_CLIENT_KEY export to .bashrc
+      become: no
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.bashrc"
+        line: 'export NOMAD_CLIENT_KEY="$HOME/nomad/privkey.pem"'
+        state: present

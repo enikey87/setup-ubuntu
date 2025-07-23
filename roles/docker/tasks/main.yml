@@ -1,0 +1,26 @@
+---
+- name: Install Docker.io
+  become: yes
+  apt:
+    name: docker.io
+    state: latest
+    update_cache: true
+
+- name: Ensure Docker service is running
+  become: yes
+  systemd:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Add user to docker group
+  become: yes
+  user:
+    name: "{{ my_user }}"
+    groups: docker
+    append: yes
+
+- name: Activate docker group in current session
+  become: no
+  command: newgrp docker
+  changed_when: false 

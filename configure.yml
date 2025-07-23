@@ -1,0 +1,29 @@
+---
+- hosts: localhost
+  vars_files:
+    - vars.yml
+  roles:
+    - cursor
+    - jetbrains-toolbox
+    - repos
+  tasks:
+
+    - name: Add ssh_config Include directive to ~/.ssh/config
+      become: no
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.ssh/config"
+        line: "Include {{ git_dir }}/authorized-keys/ssh_config"
+        state: present
+        create: yes
+        mode: '0600'
+      tags: ssh
+
+    - name: Create symbolic link for personal ssh key
+      become: no
+      ansible.builtin.file:
+        src: "{{ ansible_env.HOME }}/.ssh/id_rsa"
+        dest: "{{ ansible_env.HOME }}/.ssh/id_infra"
+        state: link
+        force: yes
+      tags: ssh
+
