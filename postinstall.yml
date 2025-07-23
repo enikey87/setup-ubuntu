@@ -11,6 +11,22 @@
         url: "git@github.com:songsterr/render-server-satellite.git"
       - name: "midi-generator"
         url: "git@github.com:songsterr/midi-generator.git"
+      - name: "render-server"
+        url: "git@github.com:songsterr/RenderServer.git"
+      - name: "songsterr-infra"
+        url: "git@github.com:songsterr/songsterr-infra.git"
+      - name: "processor-json"
+        url: "git@github.com:songsterr/songsterr-processor-json.git"
+      - name: "songsterr-openapi"
+        url: "git@github.com:songsterr/songsterr-openapi.git"
+      - name: "songsterr-auth"
+        url: "git@github.com:songsterr/songsterr-auth.git"
+      - name: "temporal-worker"
+        url: "git@github.com:songsterr/temporal-worker.git"
+      - name: "songsterr-conductor"
+        url: "git@github.com:songsterr/songsterr-conductor.git"
+      - name: "opentelemetry-ts-instrumentation"
+        url: "git@github.com:songsterr/opentelemetry-ts-instrumentationworker.git"
   tasks:
     - name: Ensure git directory exists
       become: no
