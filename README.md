@@ -18,8 +18,13 @@ sudo ansible-playbook install.yml
    ssh -T git@github.com
    ```
 
+# Configure npm
+```shell
+# take from 1P
+npm login --registry https://npm.terra.songsterr.com
+```
 # Post installation
 
 ```shell
-sudo ansible-playbook postinstall.yml
+ansible-playbook postinstall.yml -K
 ```
