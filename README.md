@@ -8,14 +8,18 @@
 - feat: automate access to nomad from Chrome via cron (every 28 days)
 - doc: update README
 
-# Install
+# System setup
 
 ```shell
+# required deps to run ansible
 sudo apt install python3 ansible -y
+# these steps doesn't require any credentials and manual configuration
 ansible-playbook setup.yml -K
 ```
 
-# Add your SSH key to GitHub (short version)
+# Configure
+
+### Add your SSH key to GitHub
 1. Copy your public key to clipboard (requires xclip):
    ```bash
    cat ~/.ssh/id_rsa.pub | xclip -selection clipboard
@@ -23,17 +27,13 @@ ansible-playbook setup.yml -K
 2. Go to https://github.com/settings/keys
 3. Click "New SSH key", give it a name, and paste your key.
 4. Save.
-5. Test with:
-   ```bash
-   ssh -T git@github.com
-   ```
 
-# Configure npm
+### Configure npm
 ```shell
 # take from 1P
 npm login --registry https://npm.terra.songsterr.com
 ```
-# Post installation
+# Setup dev-tools
 
 ```shell
 # connect to vpn to bypass country restrictions
