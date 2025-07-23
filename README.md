@@ -1,3 +1,13 @@
+# TODO
+
+- fix: don't use snap versions of nomad and vault because they can't read files from hidden folders, use official repos instead
+- feat: automate VAULT_TOKEN lookup
+- doc: write actual instructions for nomad and vault integrations
+- fix: cursor -> cursor.bin, cursor-app -> cursor
+- feat: automate certs update via cron (every 28 days)
+- fix: add songsterr root trusted cert to linux system trusted certs store
+- doc: actuallize README
+
 # Install
 
 ```shell
@@ -29,6 +39,14 @@ npm login --registry https://npm.terra.songsterr.com
 ansible-playbook postinstall.yml -K
 ```
 
+# Post configuration
+
 ```shell
+# take from 1P
 vault login -method=userpass username=person
+
+# run every month
+sh ./access/nomad_cli.sh
+# run and follow instructions every month
+sh ./access/nomad_browser.sh
 ```

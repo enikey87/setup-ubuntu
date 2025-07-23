@@ -138,21 +138,21 @@
       become: no
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.bashrc"
-        line: 'export NOMAD_CACERT="$HOME/.nomad/cachain.pem"'
+        line: 'export NOMAD_CACERT="$HOME/nomad/cachain.pem"'
         state: present
 
     - name: Add NOMAD_CLIENT_CERT export to .bashrc
       become: no
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.bashrc"
-        line: 'export NOMAD_CLIENT_CERT="$HOME/.nomad/cert.pem"'
+        line: 'export NOMAD_CLIENT_CERT="$HOME/nomad/cert.pem"'
         state: present
 
     - name: Add NOMAD_CLIENT_KEY export to .bashrc
       become: no
       ansible.builtin.lineinfile:
         path: "{{ ansible_env.HOME }}/.bashrc"
-        line: 'export NOMAD_CLIENT_KEY="$HOME/.nomad/privkey.pem"'
+        line: 'export NOMAD_CLIENT_KEY="$HOME/nomad/privkey.pem"'
         state: present
 
   roles:
