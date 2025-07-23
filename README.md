@@ -28,3 +28,7 @@ npm login --registry https://npm.terra.songsterr.com
 ```shell
 ansible-playbook postinstall.yml -K
 ```
+
+```shell
+vault login -method=userpass username=person
+```

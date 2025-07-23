@@ -120,6 +120,14 @@
         classic: yes
       tags: nomad
 
+    - name: Add VAULT_ADDR export to .bashrc
+      become: no
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.bashrc"
+        line: 'export VAULT_ADDR="https://vault.ops.songsterr.com:8200"'
+        state: present
+      tags: nomad
+
   roles:
     - vpn
     - cursor
