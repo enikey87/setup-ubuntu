@@ -31,6 +31,9 @@
         url: "git@github.com:songsterr/srw-midi-player.git"
       - name: "authorized-keys"
         url: "git@github.com:songsterr/authorized-keys"
+  roles:
+    - cursor
+    - jetbrains-toolbox
   tasks:
     - name: Ensure git directory exists
       become: no

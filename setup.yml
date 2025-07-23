@@ -4,6 +4,9 @@
     - vars.yml
   vars:
     my_group: "{{ ansible_user_gid }}"
+  roles:
+    - vpn
+    - docker
   tasks:
     - name: Ensure SSH directory exists
       become: no
@@ -155,9 +158,3 @@
         path: "{{ ansible_env.HOME }}/.bashrc"
         line: 'export NOMAD_CLIENT_KEY="$HOME/nomad/privkey.pem"'
         state: present
-
-  roles:
-    - vpn
-    - cursor
-    - jetbrains-toolbox
-    - docker

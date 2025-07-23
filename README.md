@@ -12,7 +12,7 @@
 
 ```shell
 sudo apt install python3 ansible -y
-ansible-playbook install.yml -K
+ansible-playbook setup.yml -K
 ```
 
 # Add your SSH key to GitHub (short version)
@@ -36,7 +36,13 @@ npm login --registry https://npm.terra.songsterr.com
 # Post installation
 
 ```shell
-ansible-playbook postinstall.yml -K
+# connect to vpn to bypass country restrictions
+sudo vpn add "ss://<your_outline_access_key>" "vpn0"
+sudo vpn connect vpn0
+
+ansible-playbook configure.yml -K
+
+sudo vpn disconnect
 ```
 
 # Post configuration
