@@ -17,8 +17,6 @@
         group: "{{ my_user }}"
         mode: '0700'
 
-
-
     - name: Generate OpenSSH keypair
       become: no
       openssh_keypair:
@@ -35,6 +33,20 @@
         owner: "{{ my_user }}"
         group: "{{ my_user }}"
         mode: '0644'
+
+    - name: Configure Git user email
+      become: no
+      ansible.builtin.git_config:
+        name: user.email
+        value: "{{ git_user_email }}"
+        scope: system
+
+    - name: Configure Git user name
+      become: no
+      ansible.builtin.git_config:
+        name: user.name
+        value: "{{ git_user_name }}"
+        scope: system
 
     - name: Add Chrome key
       become: yes
@@ -79,8 +91,6 @@
       become: yes
       apt:
         deb: "https://downloads.1password.com/linux/debian/amd64/stable/1password-latest.deb"
-
-
 
     - name: Open SSH port
       become: yes

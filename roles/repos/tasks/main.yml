@@ -8,26 +8,18 @@
     group: "{{ my_group }}"
     mode: '0755'
 
-- name: Configure Git user email
+- name: Test SSH connection to GitHub
   become: no
-  ansible.builtin.git_config:
-    name: user.email
-    value: "{{ git_user_email }}"
-    scope: system
+  ansible.builtin.command: ssh -T git@github.com
+  register: github_ssh_test
+  failed_when: false
+  changed_when: false
 
-- name: Configure Git user name
+- name: Display GitHub SSH connection status
   become: no
-  ansible.builtin.git_config:
-    name: user.name
-    value: "{{ git_user_name }}"
-    scope: system
-
-- name: Check if repository already exists
-  become: no
-  ansible.builtin.stat:
-    path: "{{ git_dir }}/{{ item.name }}/.git"
-  register: repo_exists
-  loop: "{{ repos }}"
+  ansible.builtin.debug:
+    msg: "GitHub SSH connection: {{ 'SUCCESS' if github_ssh_test.rc == 1 else 'FAILED' if github_ssh_test.rc == 255 else 'UNKNOWN' }}"
+  when: github_ssh_test is defined
 
 - name: Clone repositories
   become: no
@@ -40,7 +32,6 @@
   environment:
     GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"
   loop: "{{ repos }}"
-  when: not repo_exists.results[ansible_loop.index0].stat.exists
 
 - name: Check if n is available
   become: no
