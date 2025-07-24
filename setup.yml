@@ -35,14 +35,14 @@
         mode: '0644'
 
     - name: Configure Git user email
-      become: no
+      become: yes
       ansible.builtin.git_config:
         name: user.email
         value: "{{ git_user_email }}"
         scope: system
 
     - name: Configure Git user name
-      become: no
+      become: yes
       ansible.builtin.git_config:
         name: user.name
         value: "{{ git_user_name }}"
@@ -82,6 +82,7 @@
           - xclip
           - openjdk-21-jdk
           - libnss3-tools
+          - dos2unix
         state: latest
         update_cache: true
 
