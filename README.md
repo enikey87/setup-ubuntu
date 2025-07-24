@@ -19,11 +19,11 @@ ansible-playbook setup.yml -K
 4. Save.
 
 ### npm
+use `~/.npmrc` from 1P or npm login:
 ```shell
 # take from 1P
 npm login --registry https://npm.terra.songsterr.com
 ```
-
 ### vault + nomad
 
 ```shell
