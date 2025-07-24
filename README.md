@@ -54,9 +54,12 @@ sudo vpn disconnect
 
 # TODO (later)
 
+- fix: npm login web auth is not supported error
+- fix: move cursor and jetbrains toolbox to public S3 to download them directly because external links are unstable and restricted (JBT)
 - fix: don't use snap versions of nomad and vault because they can't read files from hidden folders, use official repos instead
 - fix: https://a2.ops.songsterr.com:4646/ cert is not trusted in Chrome
 - feat: automate vault login and VAULT_TOKEN lookup
 - feat: automate access to nomad from CLI via cron (every 28 days)
 - feat: automate nomad person.p12 cert update (access/nomad_browser.sh)
 - feat: automate access to nomad from Chrome via cron (every 28 days)
+- feat: use secrets from env vars instead of manual section with npm login, vpn connect, vault login etc
