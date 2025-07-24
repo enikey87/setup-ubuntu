@@ -23,6 +23,7 @@ use `~/.npmrc` from 1P or npm login:
 ```shell
 # take from 1P
 npm login --registry https://npm.terra.songsterr.com
+npm whoami --registry=https://npm.terra.songsterr.com
 ```
 ### vault + nomad
 
