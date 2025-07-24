@@ -34,11 +34,11 @@ vault token lookup -format=json | jq -r .data.id > ~/.vault-token
 chmod 600 ~/.vault-token
 
 # run every month
-sh ./access/nomad_cli.sh
+./access/nomad_cli.sh
 # run and follow instructions every month
-sh ./access/nomad_browser.sh
+./access/nomad_browser.sh
 # fix missing certs in Chrome, but unfortunately this does not work still
-sh ./patches/trust-songsterr.sh
+./patches/trust-songsterr.sh
 ```
 
 # Setup dev-tools
