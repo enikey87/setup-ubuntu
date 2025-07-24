@@ -54,6 +54,8 @@ sudo vpn disconnect
 
 # TODO (later)
 
+- fix: automate outline unstable dsn issue workaround: https://github.com/Jigsaw-Code/outline-apps/issues/568#issuecomment-1925283262
+- fix: install standalone outline client too because vpn cli tool isn't working
 - fix: npm login web auth is not supported error
 - fix: move cursor and jetbrains toolbox to public S3 to download them directly because external links are unstable and restricted (JBT)
 - fix: don't use snap versions of nomad and vault because they can't read files from hidden folders, use official repos instead
