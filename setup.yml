@@ -17,6 +17,11 @@
         group: "{{ my_user }}"
         mode: '0700'
 
+    - name: Check if SSH key already exists
+      stat:
+        path: "/home/{{ my_user }}/.ssh/id_rsa"
+      register: ssh_key
+
     - name: Generate OpenSSH keypair
       become: no
       openssh_keypair:
@@ -25,6 +30,7 @@
         size: 4096
         owner: "{{ my_user }}"
         group: "{{ my_user }}"
+      when: not ssh_key.stat.exists
 
     - name: Fix OpenSSH access rights
       become: yes
