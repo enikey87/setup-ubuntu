@@ -1,0 +1,38 @@
+---
+- name: Install npm
+  become: yes
+  ansible.builtin.apt:
+    name: npm
+    state: present
+    update_cache: yes
+
+- name: Check if n is available
+  become: no
+  command: which n
+  register: n_check
+  ignore_errors: yes
+  changed_when: false
+
+- name: Install n (Node.js version manager)
+  become: yes
+  ansible.builtin.command: npm install -g n
+  args:
+    creates: "/usr/local/bin/n"
+  environment:
+    PATH: "{{ ansible_env.PATH }}"
+  when: n_check.rc != 0
+
+- name: Install lts Node.js version
+  become: yes
+  ansible.builtin.command: n lts
+  args:
+    creates: "/usr/local/bin/node"
+  environment:
+    PATH: "{{ ansible_env.PATH }}"
+  when: n_check.rc != 0
+
+- name: Allow Node.js to use ports below 1024
+  become: yes
+  ansible.builtin.command: setcap 'cap_net_bind_service=+ep' /usr/local/bin/node
+  args:
+    creates: /usr/local/bin/node
