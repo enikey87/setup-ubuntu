@@ -1,5 +1,20 @@
 # System setup
 
+## Encrypt home
+
+You should follow this only if disk encryption was not enabled during OS installation:
+https://gist.github.com/Madhawa97/8707007771f058a201d9764865580095
+
+
+```shell
+sudo adduser backup_user
+sudo usermod -aG sudo backup_user
+# Log Out and Log In as the backup_user
+sudo ecryptfs-migrate-home -u enikey87
+sudo rm -Rf /home/enikey87.RANDOM_HASH_WITH_ORIGINAL_HOME_DIR
+sudo deluser --remove-home backup_user
+```
+
 ```shell
 # required deps to run ansible
 sudo apt install python3 ansible -y
@@ -8,18 +23,6 @@ ansible-playbook setup.yml -K
 ```
 
 # Configure (manual)
-
-### encrypt home
-
-https://gist.github.com/Madhawa97/8707007771f058a201d9764865580095
-
-```shell
-sudo adduser backup_user
-sudo usermod -aG sudo backup_user
-# Log Out and Log In as the backup_user
-sudo ecryptfs-migrate-home -u enikey87
-sudo deluser --remove-home backup_user
-```
 
 ### git
 1. Copy your public key to clipboard (requires xclip):
@@ -55,14 +58,16 @@ chmod 600 ~/.vault-token
 
 # Setup dev-tools
 ```shell
-# connect to vpn to bypass country restrictions
-sudo vpn add "ss://<your_outline_access_key>" "vpn0"
+# connect to vpn to bypass country restrictions, consider explicit dns option due to ubuntu / outline issues
+sudo vpn add "ss://<your_outline_access_key>&?dns=1.1.1.1" "vpn0"
 sudo vpn connect vpn0
 
 ansible-playbook configure.yml -K
 
 sudo vpn disconnect
 ```
+
+add task to download @https://s3.amazonaws.com/outline-releases/client/linux/stable/Outline-Client.AppImage to vpn role into  "{{ ansible_env.HOME }}/.local/bin" as outline filename
 
 # TODO (later)
 
