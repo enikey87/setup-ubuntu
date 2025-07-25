@@ -9,6 +9,18 @@ ansible-playbook setup.yml -K
 
 # Configure (manual)
 
+### encrypt home
+
+https://gist.github.com/Madhawa97/8707007771f058a201d9764865580095
+
+```shell
+sudo adduser backup_user
+sudo usermod -aG sudo backup_user
+# Log Out and Log In as the backup_user
+sudo ecryptfs-migrate-home -u enikey87
+sudo deluser --remove-home backup_user
+```
+
 ### git
 1. Copy your public key to clipboard (requires xclip):
    ```bash
