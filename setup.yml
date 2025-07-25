@@ -83,6 +83,7 @@
           - openjdk-21-jdk
           - libnss3-tools
           - dos2unix
+          - golang-go
         state: latest
         update_cache: true
 
