@@ -182,4 +182,12 @@
         line: 'export NOMAD_CLIENT_KEY="$HOME/nomad/privkey.pem"'
         state: present
 
+    - name: Install Claude Code CLI
+      ansible.builtin.command: npm install -g @anthropic-ai/claude-code
+      become: yes
+      args:
+        creates: "/usr/local/bin/claude"
+      environment:
+        PATH: "{{ ansible_env.PATH }}"
+
 
