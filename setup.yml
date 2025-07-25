@@ -54,6 +54,20 @@
         value: "{{ git_user_name }}"
         scope: system
 
+    - name: Ensure user's local bin directory exists
+      become: no
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.local/bin"
+        state: directory
+        mode: '0755'
+
+    - name: Add ~/.local/bin to PATH in .bashrc
+      become: no
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.bashrc"
+        line: 'export PATH="$HOME/.local/bin:$PATH"'
+        state: present
+
     - name: Add Chrome key
       become: yes
       ansible.builtin.apt_key:
@@ -89,7 +103,8 @@
           - openjdk-21-jdk
           - libnss3-tools
           - dos2unix
-          - golang-go
+          - ecryptfs-utils
+          - cryptsetup
         state: latest
         update_cache: true
 
@@ -122,6 +137,14 @@
         state: present
         classic: yes
       tags: nomad
+
+    - name: Install Go via snap
+      become: yes
+      community.general.snap:
+        name: go
+        state: present
+        classic: yes
+      tags: go
 
     - name: Add VAULT_ADDR export to .bashrc
       become: no

@@ -20,6 +20,14 @@
     mode: '0755'
   when: jbt_check.rc != 0
 
+- name: Add ~/.local/bin to PATH in .bashrc
+  become: no
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    line: 'export PATH="$HOME/.local/bin:$PATH"'
+    state: present
+  when: jbt_check.rc != 0
+
 - name: Create JetBrains Toolbox directory in user home
   become: no
   ansible.builtin.file:
@@ -69,11 +77,3 @@
     state: link
     force: yes
   when: jbt_check.rc != 0 and jbt_found.files|length > 0
-
-- name: Add ~/.local/bin to PATH in .bashrc
-  become: no
-  ansible.builtin.lineinfile:
-    path: "{{ ansible_env.HOME }}/.bashrc"
-    line: 'export PATH="$HOME/.local/bin:$PATH"'
-    state: present
-  when: jbt_check.rc != 0 
