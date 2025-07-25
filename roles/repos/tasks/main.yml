@@ -33,31 +33,6 @@
     GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"
   loop: "{{ repos }}"
 
-- name: Check if n is available
-  become: no
-  command: which n
-  register: n_check
-  ignore_errors: yes
-  changed_when: false
-
-- name: Install n (Node.js version manager)
-  become: yes
-  ansible.builtin.command: npm install -g n
-  args:
-    creates: "/usr/local/bin/n"
-  environment:
-    PATH: "{{ ansible_env.PATH }}"
-  when: n_check.rc != 0
-
-- name: Install lts Node.js version
-  become: yes
-  ansible.builtin.command: n lts
-  args:
-    creates: "/usr/local/bin/node"
-  environment:
-    PATH: "{{ ansible_env.PATH }}"
-  when: n_check.rc != 0
-
 - name: Install npm dependencies for Node.js projects
   become: no
   ansible.builtin.command: npm install
@@ -77,9 +52,3 @@
   loop:
     - "127.0.0.1 local.songsterr.dev local-static.songsterr.dev"
     - "::1 local.songsterr.dev local-static.songsterr.dev"
-
-- name: Allow Node.js to use ports below 1024
-  become: yes
-  ansible.builtin.command: setcap 'cap_net_bind_service=+ep' /usr/local/bin/node
-  args:
-    creates: /usr/local/bin/node
