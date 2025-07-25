@@ -55,6 +55,7 @@ sudo vpn disconnect
 # TODO (later)
 
 - feat: instructions to encryct home https://gist.github.com/Madhawa97/8707007771f058a201d9764865580095
+- fix: add ?dns=1.1.1.1 to outline key
 - fix: automate outline unstable dsn issue workaround: https://github.com/Jigsaw-Code/outline-apps/issues/568#issuecomment-1925283262
 - fix: install standalone outline client too because vpn cli tool isn't working
 - fix: npm login web auth is not supported error
