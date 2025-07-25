@@ -95,7 +95,6 @@
           - google-chrome-stable
           - libfuse2
           - ntfs-3g
-
           - vlc
           - ffmpeg
           - lame
@@ -106,6 +105,7 @@
           - dos2unix
           - ecryptfs-utils
           - cryptsetup
+          - shadowsocks-libev
         state: latest
         update_cache: true
 
