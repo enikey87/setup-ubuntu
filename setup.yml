@@ -190,4 +190,29 @@
       environment:
         PATH: "{{ ansible_env.PATH }}"
 
+    - name: Configure DNS in systemd-resolved
+      become: yes
+      ansible.builtin.lineinfile:
+        path: /etc/systemd/resolved.conf
+        regexp: '^#?DNS='
+        line: 'DNS=8.8.8.8'
+        state: present
+      register: dns_config
+
+    - name: Configure FallbackDNS in systemd-resolved
+      become: yes
+      ansible.builtin.lineinfile:
+        path: /etc/systemd/resolved.conf
+        regexp: '^#?FallbackDNS='
+        line: 'FallbackDNS=1.1.1.1'
+        state: present
+      register: fallback_dns_config
+
+    - name: Restart systemd-resolved if DNS configuration changed
+      become: yes
+      ansible.builtin.systemd:
+        name: systemd-resolved
+        state: restarted
+      when: dns_config.changed or fallback_dns_config.changed
+
 
